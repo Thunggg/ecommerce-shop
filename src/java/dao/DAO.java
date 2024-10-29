@@ -29,7 +29,8 @@ public class DAO {
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
             while(rs.next()){
-                list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(6)));
+                list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(7),
+                rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
             }
         } catch(Exception e){
             
@@ -66,7 +67,8 @@ public class DAO {
             ps.setInt(1, offSet);
             rs = ps.executeQuery();
             while (rs.next()) {
-                list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(6)));
+                list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(7),
+                rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
             }
         } catch (Exception e) {
         }
@@ -79,9 +81,8 @@ public class DAO {
         java.util.List<product> products = productDAO.getAllProduct(); // Lấy danh sách sản phẩm
 
         // Lặp qua danh sách và in thông tin của từng sản phẩm
-        for (product product : products) {
-            System.out.println("ID: " + product.getId());
-
+        for (product x : products) {
+            System.out.println(x.getStatus());
         }
     }
 }

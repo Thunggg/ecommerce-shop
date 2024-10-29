@@ -14,13 +14,19 @@ public class product {
     private String images;
     private double price;
     private String description;
+    private int stock;
+    private double discount;
+    private int status;
 
-    public product(int id, String productName, String images, double price, String description) {
+    public product(int id, String productName, String images, double price, String description, int stock, double discount, int status) {
         this.id = id;
         this.productName = productName;
         this.images = images;
         this.price = price;
         this.description = description;
+        this.stock = stock;
+        this.discount = discount;
+        this.status = status;
     }
 
     public int getId() {
@@ -62,6 +68,36 @@ public class product {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "product{" + "id=" + id + ", productName=" + productName + ", images=" + images + ", price=" + price + ", description=" + description + ", stock=" + stock + ", discount=" + discount + ", status=" + status + '}';
+    }
+
     
     
 }

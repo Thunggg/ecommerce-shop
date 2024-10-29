@@ -260,7 +260,12 @@
                                 </td>
                                 <td>${product.productName}</td>
                                 <td>${fn:substringBefore(product.price, '.')} $</td>
-                                <td><button class="btn btn-success">Active</button></td>
+                                <c:if test="${product.status == 1}">
+                                    <td><button class="btn btn-success">Active</button></td>
+                                </c:if>
+                                <c:if test="${product.status == 0}">
+                                    <td><button class="btn btn-danger">Inactive</button></td>
+                                </c:if>
                                 <td><i class="fas fa-ellipsis-v"></i></td>
                             </tr>
                         </c:forEach>
@@ -301,7 +306,7 @@
                             <!-- Dấu ... nếu cách xa các trang phía trước -->
                             <c:if test="${index < endPage - 2}">
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
-                                </c:if>
+                            </c:if>
 
                             <!-- Hiển thị trang cuối cùng -->
                             <li class="page-item ${index == endPage ? 'active' : ''}">
