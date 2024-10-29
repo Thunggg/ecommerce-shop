@@ -18,7 +18,7 @@ public class product {
     public product(int id, String productName, String images, double price, String description) {
         this.id = id;
         this.productName = productName;
-        this.images = images;
+        this.images = images.split(" ")[0];
         this.price = price;
         this.description = description;
     }

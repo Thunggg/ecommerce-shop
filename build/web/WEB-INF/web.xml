@@ -4,9 +4,25 @@
         <servlet-name>homeControl</servlet-name>
         <servlet-class>control.homeControl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>detaiControl</servlet-name>
+        <servlet-class>control.productControl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>detailControl</servlet-name>
+        <servlet-class>control.detailControl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>homeControl</servlet-name>
         <url-pattern>/home</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>detaiControl</servlet-name>
+        <url-pattern>/product</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>detailControl</servlet-name>
+        <url-pattern>/detail</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
