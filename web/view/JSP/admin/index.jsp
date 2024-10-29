@@ -242,6 +242,7 @@
                             <th>Image</th>
                             <th>Title</th>
                             <th>Price</th>
+                            <th>stock</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -260,11 +261,16 @@
                                 </td>
                                 <td>${product.productName}</td>
                                 <td>${fn:substringBefore(product.price, '.')} $</td>
+                                <td>${product.stock}</td>
                                 <c:if test="${product.status == 1}">
-                                    <td><button class="btn btn-success">Active</button></td>
+                                    <td>
+                                        <button class="btn btn-success" onclick="handleClickButton(${product.getId()}, ${product.status})">Active</button>
+                                    </td>
                                 </c:if>
                                 <c:if test="${product.status == 0}">
-                                    <td><button class="btn btn-danger">Inactive</button></td>
+                                    <td>
+                                        <button class="btn btn-danger" onclick="handleClickButton(${product.getId()}, ${product.status})">Inctive</button>
+                                    </td>
                                 </c:if>
                                 <td><i class="fas fa-ellipsis-v"></i></td>
                             </tr>
@@ -306,7 +312,7 @@
                             <!-- Dấu ... nếu cách xa các trang phía trước -->
                             <c:if test="${index < endPage - 2}">
                                 <li class="page-item disabled"><span class="page-link">...</span></li>
-                            </c:if>
+                                </c:if>
 
                             <!-- Hiển thị trang cuối cùng -->
                             <li class="page-item ${index == endPage ? 'active' : ''}">
@@ -363,8 +369,63 @@
                 });
             });
 
+
+            handleClickButton = (id, curStatus) => {
+                const newStatus = 1 - curStatus; // Chuyển đổi trạng thái (0 <-> 1)
+
+                // Gửi yêu cầu AJAX
+                $.ajax({
+                    url: '/updateProductStatus',
+                    type: 'POST',
+                    data: {id: id, status: newStatus},
+                    success: function (response, status, xhr) {
+                        if (xhr.status === 200) {
+
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
+                            Toast.fire({
+                                icon: "success",
+                                title: "Update successfully"
+                            }).then(() => {
+                                // Sau khi thông báo hoàn tất, mới reload lại trang
+                                window.location.reload();
+                            });
+                        }
+                    },
+                    error: function () {
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top-end",
+                            showConfirmButton: false,
+                            timer: 1000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.onmouseenter = Swal.stopTimer;
+                                toast.onmouseleave = Swal.resumeTimer;
+                            }
+                        });
+                        Toast.fire({
+                            icon: "error",
+                            title: "Update failed"
+                        });
+                    }
+                });
+            }
+
         </script>
         <!-- Bootstrap JavaScript -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     </body>
 </html>

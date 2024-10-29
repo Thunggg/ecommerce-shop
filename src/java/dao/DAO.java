@@ -17,27 +17,28 @@ import java.util.ArrayList;
  * @author Nguyen_Tien_Thuan_CE181024
  */
 public class DAO {
+
     Connection conn = null; // ket noi voi sql
     PreparedStatement ps = null; // chuyen cau lenh sang sql 
     ResultSet rs = null; //nhan ket qua tra ve
-    
+
     public ArrayList<product> getAllProduct() {
         ArrayList<product> list = new ArrayList<>();
         String query = "SELECT * FROM Products";
-        try{
+        try {
             conn = new DBContext().getConnection(); // mo ket noi voi sql sever
             ps = conn.prepareStatement(query);
             rs = ps.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(7),
-                rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
+                        rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
             }
-        } catch(Exception e){
-            
+        } catch (Exception e) {
+
         }
         return list;
     }
-    
+
     public int getTotalProduct() {
 
         String query = "select count(*) from Products";
@@ -68,21 +69,51 @@ public class DAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 list.add(new product(rs.getInt(1), rs.getString(2), rs.getString(8), rs.getDouble(13), rs.getString(7),
-                rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
+                        rs.getInt(6), rs.getDouble(11), rs.getInt(14)));
             }
         } catch (Exception e) {
         }
 
         return list;
     }
-    
+
+    public boolean updateProductStatus(int productId, boolean status) {
+        String query = "UPDATE products SET status = ? WHERE id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setBoolean(1, status);
+            ps.setInt(2, productId);
+            int rowsAffected = ps.executeUpdate(); // Chỉ gọi một lần
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            // Đảm bảo giải phóng tài nguyên
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+
     public static void main(String[] args) {
         DAO productDAO = new DAO(); // Tạo đối tượng ProductDAO
-        java.util.List<product> products = productDAO.getAllProduct(); // Lấy danh sách sản phẩm
-
-        // Lặp qua danh sách và in thông tin của từng sản phẩm
-        for (product x : products) {
-            System.out.println(x.getStatus());
-        }
+        productDAO.updateProductStatus(1, true);
     }
 }
