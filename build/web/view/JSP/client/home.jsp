@@ -57,8 +57,8 @@
                 <div class="logo"><a href="/home"><img src="/view/assets/home/img/logo/Untitled_Project1123-removebg.png"></a></div>
                 <nav class="navigation">
                     <ul class="nav-list">
-                        <li><a href="#">Giới Thiệu</a></li>
-                        <li><a href="#">Sản Phẩm</a></li>
+                        <li><a href="home">Giới Thiệu</a></li>
+                        <li><a href="/product">Sản Phẩm</a></li>
                         <li><a href="#">Bài Viết</a></li>
                         <li><a href="#">Liên Hệ</a></li>
                     </ul>
@@ -119,7 +119,7 @@
                 <c:forEach begin="1" end="20" var="product" items="${ListP}">
                     <div class="product-card">
                         <img src="${product.getImages()}" alt="T-shirt with Type Design">
-                        <a href="" class="product-title">${product.productName}</a>
+                        <a href="/view/JSP/client/detail.jsp" class="product-title">${product.productName}</a>
                         <p class="price">$${fn:substringBefore(product.getPrice(), '.')}</p>
                     </div>
                 </c:forEach>
