@@ -160,6 +160,11 @@ public class allProduct {
     public void setTypeId(int typeId) {
         this.typeId = typeId;
     }
+
+    @Override
+    public String toString() {
+        return "allProduct{" + "productName=" + productName + ", supplierId=" + supplierId + ", categoryId=" + categoryId + ", size=" + size + ", stock=" + stock + ", description=" + description + ", images=" + images + ", colors=" + colors + ", releaseDate=" + releaseDate + ", discount=" + discount + ", unitSold=" + unitSold + ", price=" + price + ", status=" + status + ", typeId=" + typeId + '}';
+    }
     
     
     

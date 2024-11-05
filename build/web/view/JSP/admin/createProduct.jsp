@@ -382,10 +382,10 @@
                     </div>
 
                     <!-- Stock Quantity -->
-                    <div class="form-group">
+<!--                    <div class="form-group">
                         <label for="stock">Stock Quantity</label>
                         <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" required>
-                    </div>
+                    </div>-->
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
@@ -403,29 +403,29 @@
         %>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
-                // Initialize SweetAlert Toast
-                const Toast = Swal.mixin({
-                    toast: true,
-                    position: "top-end",
-                    showConfirmButton: false,
-                    timer: 8000,
-                    timerProgressBar: true,
-                    didOpen: (toast) => {
-                        toast.onmouseenter = Swal.stopTimer;
-                        toast.onmouseleave = Swal.resumeTimer;
-                    }
-                });
+                            // Initialize SweetAlert Toast
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top-end",
+                                showConfirmButton: false,
+                                timer: 5000,
+                                timerProgressBar: true,
+                                didOpen: (toast) => {
+                                    toast.onmouseenter = Swal.stopTimer;
+                                    toast.onmouseleave = Swal.resumeTimer;
+                                }
+                            });
 
-                // Trigger the success toast notification
-                Toast.fire({
-                    icon: "error",
-                    title: "<%= successMessage%>"
-                }).then(() => {
-                    // Remove the session attribute after showing the notification
+                            // Trigger the success toast notification
+                            Toast.fire({
+                                icon: "error",
+                                title: "<%= successMessage%>"
+                            }).then(() => {
+                                // Remove the session attribute after showing the notification
             <%
                 session.removeAttribute("errorMessage");
             %>
-                });
+                            });
         </script>
         <%
             }

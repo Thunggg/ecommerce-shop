@@ -13,6 +13,7 @@ import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -211,9 +212,104 @@ public class DAO {
         return false;
     }
 
-    public static void main(String[] args) {
-        DAO productDAO = new DAO(); // Tạo đối tượng ProductDAO
-        int id = productDAO.getNewIdProduct();
-        System.out.println(id);
+    public allProduct getProductById(int id) {
+        String query = "SELECT * FROM Products WHERE id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            // Kiểm tra nếu có dữ liệu trong ResultSet
+            if (rs.next()) {
+                return new allProduct(rs.getString(2), rs.getInt(3), rs.getInt(4), rs.getString(5), rs.getInt(6),
+                        rs.getString(7), rs.getString(8), rs.getString(9), rs.getDate(10),
+                        rs.getDouble(11), rs.getInt(12), rs.getDouble(13), rs.getBoolean(14),
+                        rs.getInt(15));
+            } else {
+                System.out.println("No product found with ID: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi để biết rõ nguyên nhân
+        }
+        return null;
     }
+
+    public boolean updateProduct(allProduct product, int id) {
+        String query = "UPDATE Products SET productname = ?, supplierid = ?, categoryid = ?, size = ?, stock = ?, description = ?, images = ?, colors = ?, releasedate = ?, discount = ?, unitSold = ?, price = ?, status = ?, typeid = ? \n"
+                + "WHERE id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+
+            // Gán các tham số vào câu lệnh
+            ps.setString(1, product.getProductName());
+            ps.setInt(2, product.getSupplierId());
+            ps.setInt(3, product.getCategoryId());
+            ps.setString(4, product.getSize());
+            ps.setInt(5, product.getStock());
+            ps.setString(6, product.getDescription());
+            ps.setString(7, product.getImages());
+            ps.setString(8, product.getColors());
+            ps.setDate(9, product.getReleaseDate());
+            ps.setDouble(10, product.getDiscount());
+            ps.setInt(11, product.getUnitSold());
+            ps.setDouble(12, product.getPrice());
+            ps.setBoolean(13, product.isStatus());
+            ps.setInt(14, product.getTypeId());
+            ps.setInt(15, id); // Gán ID sản phẩm để cập nhật
+
+            int rowsUpdated = ps.executeUpdate(); // Thực thi câu lệnh
+            return rowsUpdated > 0; // Trả về true nếu có dòng được cập nhật
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Hiển thị chi tiết lỗi
+        } finally {
+            // Đảm bảo đóng kết nối và giải phóng tài nguyên
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false; // Trả về false nếu có lỗi xảy ra
+    }
+
+    public boolean deleteProductById(int id) {
+        String query = "delete Products where id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+        DAO dao = new DAO(); // Tạo đối tượng DAO
+        allProduct p = dao.getProductById(1);
+        if (p != null) {
+            System.out.println(p);
+        } else {
+            System.out.println("Product not found or an error occurred.");
+        }
+    }
+
 }

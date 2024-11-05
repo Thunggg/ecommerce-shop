@@ -4,6 +4,7 @@
     Author     : Nguyen_Tien_Thuan_CE181024
 --%>
 
+<%@page import="entity.product"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
@@ -283,12 +284,17 @@
                 <a href="#">Products</a> / <span>Create New Product</span>
             </div>
 
-            <form action="/admin/create" method="POST" enctype="multipart/form-data" class="product-form">
+            <form action="/admin/editProduct" method="POST" enctype="multipart/form-data" class="product-form">
+
+                <input type="hidden" name="productId" value="${id}">  <!-- Thêm thuộc tính ẩn cho ID sản phẩm -->
+
                 <div class="image-section">
+
 
                     <div class="main-image" onclick="handleImageUpload(this)">
                         <input type="file" name="photo" accept="image/*" style="display: none;" onchange="previewMainImage(event)">
-                        <img id="mainImagePreview" src="" alt="Preview" style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" />
+
+                        <img id="mainImagePreview" src="${product.images}" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;" />
                     </div>
 
                 </div>
@@ -297,25 +303,25 @@
                     <!-- Product Name -->
                     <div class="form-group">
                         <label for="productName">Product Name</label>
-                        <input type="text" name="productName" id="productName" placeholder="Enter product name" required>
+                        <input type="text" name="productName" id="productName" placeholder="Enter product name" value="${product.productName}" required">
                     </div>
 
                     <!-- Price -->
                     <div class="form-group">
                         <label for="price">Price ($)</label>
-                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01" required>
+                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01" value="${product.price}" required>
                     </div>
 
                     <!-- Discount -->
                     <div class="form-group">
                         <label for="discount">Discount ($)</label>
-                        <input type="number" name="discount" id="discount" placeholder="Enter discount" min="0" step="0.01">
+                        <input type="number" name="discount" id="discount" placeholder="Enter discount" min="0" step="0.01" value="${product.discount}">
                     </div>
 
                     <!-- Description -->
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="Enter product description" required></textarea>
+                        <textarea name="description" id="description" placeholder="Enter product description" required>${product.description}</textarea>
                     </div>
 
                     <!-- Category -->
@@ -323,7 +329,10 @@
                         <label for="categoryId">Category</label>
                         <select name="categoryId" id="categoryId" class="form-select" required>
                             <c:forEach items="${listCategory}" var="category">
-                                <option value="${category.id}-${category.type_id}">${category.name}</option>
+                                <option value="${category.id}-${category.type_id}"
+                                        <c:if test="${category.id == product.categoryId}">selected</c:if>>
+                                    ${category.name}
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
@@ -333,21 +342,25 @@
                         <label for="supplierId">Supplier</label>
                         <select name="supplierId" id="supplierId" class="form-select" required>
                             <c:forEach items="${listSupplier}" var="supplier">
-                                <option value="${supplier.id}">${supplier.name}</option>
+                                <option value="${supplier.id}"
+                                        <c:if test="${supplier.id == product.supplierId}">selected</c:if>>
+                                    ${supplier.name}
+                                </option>
                             </c:forEach>
                         </select>
                     </div>
 
+
                     <!-- Stock -->
                     <div class="form-group">
                         <label for="stock">Stock </label>
-                        <input type="number" name="stock" id="stock" placeholder="Enter stock" min="1" step="1">
+                        <input type="number" name="stock" id="stock" placeholder="Enter stock" min="1" step="1" value="${product.stock}">
                     </div>
 
                     <!-- Colors -->
                     <div class="form-group">
                         <label for="colors">Colors</label>
-                        <input type="text" name="colors" id="colors" placeholder="Enter colors of product (e.g., Red, Blue)" required>
+                        <input type="text" name="colors" id="colors" placeholder="Enter colors of product (e.g., Red, Blue)" value="${product.colors}" required>
                     </div>
 
                     <!-- Sizes -->
@@ -355,41 +368,48 @@
                         <label>Sizes</label>
                         <div class="size-options">
                             <label class="size-option">
-                                <input type="checkbox" name="sizes" value="XS">
-                                <span>XS</span>
-                            </label>
-                            <label class="size-option">
-                                <input type="checkbox" name="sizes" value="S" checked>
-                                <span>S</span>
-                            </label>
-                            <label class="size-option">
-                                <input type="checkbox" name="sizes" value="M">
-                                <span>M</span>
-                            </label>
-                            <label class="size-option">
-                                <input type="checkbox" name="sizes" value="L">
-                                <span>L</span>
-                            </label>
-                            <label class="size-option">
-                                <input type="checkbox" name="sizes" value="XL">
-                                <span>XL</span>
-                            </label>
-                            <label class="size-option">
-                                <input type="checkbox" name="sizes" value="XL">
-                                <span>XXL</span>
-                            </label>
+                                <input type="checkbox" name="sizes" value="XS" 
+                                       <c:if test="${fn:contains(product.size, 'XS')}">checked</c:if>>
+                                       <span>XS</span>
+                                </label>
+                                <label class="size-option">
+                                    <input type="checkbox" name="sizes" value="S" 
+                                    <c:if test="${fn:contains(product.size, 'S')}">checked</c:if>>
+                                    <span>S</span>
+                                </label>
+                                <label class="size-option">
+                                    <input type="checkbox" name="sizes" value="M" 
+                                    <c:if test="${fn:contains(product.size, 'M')}">checked</c:if>>
+                                    <span>M</span>
+                                </label>
+                                <label class="size-option">
+                                    <input type="checkbox" name="sizes" value="L" 
+                                    <c:if test="${fn:contains(product.size, 'L')}">checked</c:if>>
+                                    <span>L</span>
+                                </label>
+                                <label class="size-option">
+                                    <input type="checkbox" name="sizes" value="XL" 
+                                    <c:if test="${fn:contains(product.size, 'XL')}">checked</c:if>>
+                                    <span>XL</span>
+                                </label>
+                                <label class="size-option">
+                                    <input type="checkbox" name="sizes" value="XXL" 
+                                    <c:if test="${fn:contains(product.size, 'XXL')}">checked</c:if>>
+                                    <span>XXL</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Stock Quantity -->
-<!--                    <div class="form-group">
-                        <label for="stock">Stock Quantity</label>
-                        <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" required>
+
+                        <!-- Stock Quantity -->
+<!--                        <div class="form-group">
+                            <label for="stock">Stock Quantity</label>
+                            <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" value="${product.stock}" required>
                     </div>-->
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <button type="submit" class="btn btn-success btn-create">Create</button>
+                        <button type="submit" class="btn btn-success btn-create">Update</button>
                         <a class="btn btn-danger" href="/admin" role="button">Cancel</a>
                     </div>
                 </div>
@@ -476,18 +496,21 @@
 
             function previewMainImage(event) {
                 const mainImagePreview = document.getElementById('mainImagePreview');
-                mainImagePreview.src = null;
-                const file = event.target.files[0];
+                const file = event.target.files[0]; // Lấy file đã tải lên
 
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function () {
-                        mainImagePreview.src = reader.result;
+                        mainImagePreview.src = reader.result; // Cập nhật src của hình ảnh
                         mainImagePreview.style.display = 'block'; // Hiển thị hình ảnh
                     }
-                    reader.readAsDataURL(file);
+                    reader.readAsDataURL(file); // Đọc file ảnh
+                } else {
+                    // Nếu không có file, giữ nguyên ảnh cũ
+                    mainImagePreview.src = "${product.images}"; // Giữ lại ảnh cũ
                 }
             }
+
         </script>
         <!-- Bootstrap 5 JavaScript Bundle with Popper -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

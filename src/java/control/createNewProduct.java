@@ -137,14 +137,14 @@ public class createNewProduct extends HttpServlet {
             String imageLink = "view/assets/home/img/products/" + fileName;
             part.write(realPath + "/" + fileName);
 
-            allProduct p = new allProduct(productName, supplierId, categoryId, "S", stock, description, imageLink, colors, releaseDate, discount, unitSold, price, true, typeId);
+            allProduct p = new allProduct(productName, supplierId, categoryId, listSize, stock, description, imageLink, colors, releaseDate, discount, unitSold, price, true, typeId);
 
             boolean insertProduct = productDAO.insertProduct(p);
 
             if (insertProduct) {
-                response.sendRedirect("/admin");
                 HttpSession session = request.getSession();
                 session.setAttribute("successMessage", "Product added successfully!");
+                response.sendRedirect("/admin");
             } else {
                 HttpSession session = request.getSession();
                 session.setAttribute("errorMessage", "Failed to add product. Please try again.");

@@ -5,6 +5,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!-- Bootstrap CSS -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -248,7 +249,7 @@
             /* Dropdown styling */
             .dropdown-content {
                 top: calc(100% + 5px); /* Adds a 5px gap */
-                left: -100%; /* Centers the dropdown */
+                left: -50%; /* Centers the dropdown */
                 transform: translate(-50%, -10px); /* Slide animation starts 10px above */
                 opacity: 0;
                 max-height: 0;
@@ -260,6 +261,7 @@
                 box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
                 z-index: 1;
                 transition: opacity 0.3s ease, max-height 0.3s ease, transform 0.3s ease;
+                z-index: 1000; /* Đảm bảo menu nằm trên cùng */
             }
 
             .dropdown-content.show {
@@ -283,6 +285,12 @@
                 background-color: #f0f0f0;
                 color: #007bff;
             }
+
+            .product-name{
+                width: 570px;
+            }
+
+
         </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
@@ -334,7 +342,7 @@
                                         <img src="${urlArray[0]}" alt="${product.productName}" class="img-product" />
                                     </div>
                                 </td>
-                                <td>${product.productName}</td>
+                                <td class="product-name">${product.productName}</td>
                                 <td>${fn:substringBefore(product.price, '.')} $</td>
                                 <td>${product.stock}</td>
                                 <c:if test="${product.status == 1}">
@@ -354,8 +362,8 @@
                                         </button>
                                         <div class="dropdown-content">
                                             <a href="#" onclick="viewDetails()">View Details</a>
-                                            <a href="#" onclick="editProduct()">Edit Product</a>
-                                            <a href="#" onclick="editProduct()">Delete Product</a>
+                                            <a href="/admin/editProduct?id=${product.id}" onclick="editProduct()">Edit Product</a>
+                                            <a href="#" class="delete-product" data-product-id="${product.id}" onclick="confirmDelete(event)">Delete Product</a>
                                         </div>
                                     </div>
                                 </td>
@@ -576,6 +584,61 @@
             <% session.removeAttribute("messageType");%>
                 }
             });
+            function confirmDelete(event) {
+                event.preventDefault(); // Ngăn không cho thẻ <a> thực hiện hành động mặc định
+
+                const productId = $(event.target).data("product-id"); // Lấy ID sản phẩm từ thuộc tính data
+
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: "btn btn-success",
+                        cancelButton: "btn btn-danger"
+                    },
+                    buttonsStyling: false
+                });
+
+                swalWithBootstrapButtons.fire({
+                    title: "Are you sure?",
+                    text: "You won't be able to revert this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Yes, delete it!",
+                    cancelButtonText: "No, cancel!",
+                    reverseButtons: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Gửi yêu cầu AJAX để xóa sản phẩm
+                        $.ajax({
+                            url: `/admin/deleteProduct`, // Đường dẫn servlet xử lý xóa sản phẩm
+                            type: "POST", // Sử dụng POST để xóa
+                            data: {id: productId}, // Gửi ID sản phẩm
+                            success: function (response) {
+                                swalWithBootstrapButtons.fire({
+                                    title: "Deleted!",
+                                    text: "Your product has been deleted.",
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.reload(); // Hoặc chuyển hướng đến danh sách sản phẩm
+                                });
+                            },
+                            error: function (xhr, status, error) {
+                                swalWithBootstrapButtons.fire({
+                                    title: "Error",
+                                    text: "There was an error deleting the product.",
+                                    icon: "error"
+                                });
+                            }
+                        });
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Cancelled",
+                            text: "Your product is safe :)",
+                            icon: "error"
+                        });
+                    }
+                });
+            }
+
         </script>
         <!-- Bootstrap JavaScript -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
