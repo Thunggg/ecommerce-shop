@@ -6,7 +6,13 @@
             <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/control/homeControl.java</file>
             <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/control/adminControl.java</file>
             <file>file:/E:/PRJ301_PROJECT/ClothesShop/web/view/JSP/admin/index.jsp</file>
-            <file>file:/E:/PRJ301_PROJECT/ClothesShop/web/view/assets/admin/css/style.css</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/web/view/JSP/admin/createProduct.jsp</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/web/WEB-INF/web.xml</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/dao/admin/DAO.java</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/entity/supplier.java</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/control/updateProductStatus.java</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/control/createNewProduct.java</file>
+            <file>file:/E:/PRJ301_PROJECT/ClothesShop/src/java/entity/allProduct.java</file>
         </group>
     </open-files>
 </project-private>

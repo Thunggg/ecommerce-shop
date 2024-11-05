@@ -102,14 +102,33 @@
                 color: #718096;
             }
 
+            /* Updated style for Add New button */
             .add-new {
-                padding: 8px 16px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 0px 20px;
                 background: #3b82f6;
                 color: white;
                 border: none;
                 border-radius: 6px;
+                font-weight: 500;
+                text-transform: uppercase;
+                font-size: 14px;
                 cursor: pointer;
+                transition: background-color 0.3s ease, transform 0.1s ease;
             }
+
+            .add-new:hover {
+                background: #2563eb;
+                transform: scale(1.05);
+            }
+
+            .add-new a {
+                color: inherit; /* Keep text color white within the link */
+                text-decoration: none; /* Remove underline */
+            }
+
 
             .table-container {
                 background: white;
@@ -204,10 +223,66 @@
                 text-align: center
             }
 
+            /*                                    view detail product                             */
+            .action {
+                position: relative;
+            }
+
+            /* Style for action button */
+            .menu-btn {
+                background: none;
+                border: none;
+                font-size: 18px;
+                color: #333;
+                cursor: pointer;
+                padding: 8px;
+                border-radius: 50%;
+                transition: background-color 0.2s ease;
+            }
+
+            .menu-btn:focus {
+                background-color: rgba(0, 0, 0, 0.1);
+                outline: none;
+            }
+
+            /* Dropdown styling */
+            .dropdown-content {
+                top: calc(100% + 5px); /* Adds a 5px gap */
+                left: -100%; /* Centers the dropdown */
+                transform: translate(-50%, -10px); /* Slide animation starts 10px above */
+                opacity: 0;
+                max-height: 0;
+                overflow: hidden;
+                position: absolute;
+                background-color: #ffffff;
+                min-width: 140px;
+                border-radius: 8px;
+                box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+                z-index: 1;
+                transition: opacity 0.3s ease, max-height 0.3s ease, transform 0.3s ease;
+            }
+
+            .dropdown-content.show {
+                opacity: 1;
+                max-height: 200px;
+                transform: translate(-50%, 0); /* End position, dropdown fully visible */
+            }
 
 
+            .dropdown-content a {
+                color: #333;
+                padding: 10px 15px;
+                text-decoration: none;
+                display: block;
+                font-size: 14px;
+                transition: background-color 0.2s ease, color 0.2s ease;
+                border-radius: 4px;
+            }
 
-
+            .dropdown-content a:hover {
+                background-color: #f0f0f0;
+                color: #007bff;
+            }
         </style>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
@@ -230,7 +305,7 @@
                         <i class="fas fa-search"></i>
                         <input type="text" placeholder="Search...">
                     </div>
-                    <button class="add-new">ADD NEW</button>
+                    <a class="btn btn-primary add-new" href="/admin/create" role="button">New Product</a>
                 </div>
             </div>
 
@@ -272,7 +347,18 @@
                                         <button class="btn btn-danger" onclick="handleClickButton(${product.getId()}, ${product.status})">Inctive</button>
                                     </td>
                                 </c:if>
-                                <td><i class="fas fa-ellipsis-v"></i></td>
+                                <td class="action">
+                                    <div class="dropdown">
+                                        <button onclick="toggleDropdown(this)" class="menu-btn">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </button>
+                                        <div class="dropdown-content">
+                                            <a href="#" onclick="viewDetails()">View Details</a>
+                                            <a href="#" onclick="editProduct()">Edit Product</a>
+                                            <a href="#" onclick="editProduct()">Delete Product</a>
+                                        </div>
+                                    </div>
+                                </td>
                             </tr>
                         </c:forEach>
 
@@ -326,16 +412,42 @@
                         </ul>
                     </nav>
 
+                    <%
+                        HttpSession Session = request.getSession();
+                        String successMessage = (String) Session.getAttribute("successMessage");
+                        if (successMessage != null) {
+                    %>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                                                // Initialize SweetAlert Toast
+                                                const Toast = Swal.mixin({
+                                                    toast: true,
+                                                    position: "top-end",
+                                                    showConfirmButton: false,
+                                                    timer: 5000,
+                                                    timerProgressBar: true,
+                                                    didOpen: (toast) => {
+                                                        toast.onmouseenter = Swal.stopTimer;
+                                                        toast.onmouseleave = Swal.resumeTimer;
+                                                    }
+                                                });
 
-                    <!--                    <div class="page-numbers">
-                                            <button><i class="fas fa-chevron-left"></i></button>
-                    <c:forEach begin="1" end="${endPage}" var="i">
-                    <button type="button" class="btn btn-primary">
-                        <a href="admin?index=${i}">${i}</a>
-                    </button>
-                    </c:forEach>
-                    <button><i class="fas fa-chevron-right"></i></button>
-                </div>-->
+                                                // Trigger the success toast notification
+                                                Toast.fire({
+                                                    icon: "success",
+                                                    title: "<%= successMessage%>"
+                                                }).then(() => {
+                                                    // Remove the session attribute after showing the notification
+                        <%
+                            session.removeAttribute("successMessage");
+                        %>
+                                                });
+                    </script>
+                    <%
+                        }
+                    %>
+
+
                 </div>
             </div>
         </div>
@@ -381,24 +493,8 @@
                     success: function (response, status, xhr) {
                         if (xhr.status === 200) {
 
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 1000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
-                            Toast.fire({
-                                icon: "success",
-                                title: "Update successfully"
-                            }).then(() => {
-                                // Sau khi thông báo hoàn tất, mới reload lại trang
-                                window.location.reload();
-                            });
+                            window.location.reload();
+
                         }
                     },
                     error: function () {
@@ -421,10 +517,70 @@
                 });
             }
 
+
+            function toggleDropdown(button) {
+                const dropdownContent = button.nextElementSibling;
+                dropdownContent.classList.toggle('show');
+
+                // Remove focus from the button to prevent outline
+                button.blur();
+
+                // Close dropdown if clicking outside
+                document.addEventListener('click', function (event) {
+                    if (!button.contains(event.target) && !dropdownContent.contains(event.target)) {
+                        dropdownContent.classList.remove('show');
+                    }
+                });
+            }
+
+
+            function viewDetails() {
+                console.log("Viewing product details...");
+                // Add your logic for viewing product details here
+            }
+
+            function editProduct() {
+                console.log("Editing product...");
+                // Add your logic for editing the product here
+            }
+
+            // In ra thông báo khi cập nhật trạng thái sản phẩm thành công
+            // Hàm hiển thị thông báo bằng toast dựa vào dữ liệu trong session
+            function showToast(message, type) {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: type,
+                    title: message
+                });
+            }
+
+            // Hiển thị thông báo nếu tồn tại trong session
+            document.addEventListener("DOMContentLoaded", function () {
+                const message = "<c:out value='${sessionScope.message}'/>";
+                const messageType = "<c:out value='${sessionScope.messageType}'/>";
+                if (message) {
+                    showToast(message, messageType);
+
+                    // Xóa thông báo khỏi session sau khi hiển thị
+            <% session.removeAttribute("message"); %>
+            <% session.removeAttribute("messageType");%>
+                }
+            });
         </script>
         <!-- Bootstrap JavaScript -->
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </body>

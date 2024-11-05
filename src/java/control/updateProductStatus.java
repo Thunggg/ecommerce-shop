@@ -4,7 +4,7 @@
  */
 package control;
 
-import dao.DAO;
+import dao.admin.DAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -67,7 +68,7 @@ public class updateProductStatus extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // Lấy ID sản phẩm và trạng thái từ yêu cầu
         String productIdParam = request.getParameter("id");
         String statusParam = request.getParameter("status");
@@ -84,11 +85,16 @@ public class updateProductStatus extends HttpServlet {
         // Gọi DAO để cập nhật trạng thái sản phẩm
         DAO dao = new DAO();
         boolean isUpdated = dao.updateProductStatus(productId, status);
+        HttpSession session = request.getSession();
 
         // Trả về kết quả
         if (isUpdated) {
+            session.setAttribute("message", "Update successfully");
+            session.setAttribute("messageType", "success");
             response.setStatus(HttpServletResponse.SC_OK); // Trả về mã 200 nếu cập nhật thành công
         } else {
+            session.setAttribute("message", "Update failed");
+            session.setAttribute("messageType", "error");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST); // Trả về mã 400 nếu cập nhật thất bại
         }
     }

@@ -1,5 +1,5 @@
 
-import dao.DAO;
+import dao.admin.DAO;
 import entity.product;
 import java.util.ArrayList;
 

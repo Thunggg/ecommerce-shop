@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public class DBContext {
     
-    private static String URL="jdbc:sqlserver://localhost:1433;databaseName=ClothesShop;encrypt=false";
+    private static String URL="jdbc:sqlserver://localhost:1433;databaseName=ClotheShopUpdate;encrypt=false";
     private static String USER="user";
     private static String PASS="123";
 
