@@ -343,7 +343,7 @@ public class DAO {
 
         return list;
     }
-    
+
     public boolean deleteUserById(int id) {
         String query = "delete Users where id = ?";
         try {
@@ -361,7 +361,7 @@ public class DAO {
 
         return false;
     }
-    
+
     public boolean updateUserStatus(int productId, boolean status) {
         String query = "UPDATE Users SET status = ? WHERE id = ?";
         try {
@@ -396,7 +396,7 @@ public class DAO {
             }
         }
     }
-    
+
     public ArrayList<user> getAllAdmin() {
         ArrayList<user> list = new ArrayList<>();
         String query = "select * from Users\n"
@@ -414,7 +414,7 @@ public class DAO {
         }
         return list;
     }
-    
+
     public ArrayList<user> pagingAdmin(int curPage) {
         ArrayList<user> list = new ArrayList<>();
         String query = "select * from Users\n"
@@ -437,14 +437,14 @@ public class DAO {
 
         return list;
     }
-    
+
     public boolean insertAdmin(String firstname, String lastname, String email, String avatar, String username, String password, String address, String phone) {
         String query = "INSERT INTO Users (firstname, lastname, email, avatar, username, password, address, phone, roleid, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try {
             conn = new DBContext().getConnection();
             ps = conn.prepareStatement(query);
-            
+
             ps.setString(1, firstname);
             ps.setString(2, lastname);
             ps.setString(3, email);
@@ -464,7 +464,71 @@ public class DAO {
         }
         return false;
     }
-    
+
+    public user getAdminById(int id) {
+        String query = "SELECT * FROM Users WHERE id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            // Kiểm tra nếu có dữ liệu trong ResultSet
+            if (rs.next()) {
+                return new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11));
+            } else {
+                System.out.println("No product found with ID: " + id);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra lỗi để biết rõ nguyên nhân
+        }
+        return null;
+
+    }
+
+    public boolean updateAdmin(String firstname, String lastname, String email, String avatar, String username, String password, String address, String phone, int id) {
+        String query = "UPDATE users SET firstname = ?, lastname = ?, email = ?, avatar = ?, username = ?, password = ?, address = ?, phone = ? WHERE id = ?;";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+
+            // Gán các tham số vào câu lệnh
+            ps.setString(1, firstname);
+            ps.setString(2, lastname);
+            ps.setString(3, email);
+            ps.setString(4, avatar);
+            ps.setString(5, username);
+            ps.setString(6, password);
+            ps.setString(7, address);
+            ps.setString(8, phone);
+            ps.setInt(9, id);
+
+            int rowsUpdated = ps.executeUpdate(); // Thực thi câu lệnh
+            return rowsUpdated > 0; // Trả về true nếu có dòng được cập nhật
+
+        } catch (Exception e) {
+            e.printStackTrace(); // Hiển thị chi tiết lỗi
+        } finally {
+            // Đảm bảo đóng kết nối và giải phóng tài nguyên
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return false; // Trả về false nếu có lỗi xảy ra
+    }
+
     public static void main(String[] args) {
         DAO dao = new DAO(); // Tạo đối tượng DAO
         ArrayList<user> u = dao.getAllUser();

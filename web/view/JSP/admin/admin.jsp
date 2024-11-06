@@ -356,6 +356,7 @@
                                         </button>
                                         <div class="dropdown-content">
                                             <a href="#" onclick="viewDetails()">View Details</a>
+                                            <a href="/admin/editAdmin?id=${user.id}" onclick="editProduct()">Edit Product</a>
                                             <a href="#" class="delete-user" data-user-id="${user.id}" onclick="confirmDelete(event)">Delete Users</a>
                                         </div>
                                     </div>
