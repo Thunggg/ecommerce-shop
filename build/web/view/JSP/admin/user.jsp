@@ -298,7 +298,15 @@
         <jsp:include page="sidebar.jsp"></jsp:include>
 
             <div class="main-content">
-            <jsp:include page="header.jsp"></jsp:include>
+                <div class="header">
+                    <h1>User List</h1>
+                    <div style="display: flex; gap: 16px;">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search...">
+                        </div>
+                    </div>
+                </div>
 
                 <div class="table-container">
                     <table>
@@ -347,8 +355,7 @@
                                         </button>
                                         <div class="dropdown-content">
                                             <a href="#" onclick="viewDetails()">View Details</a>
-                                            <a href="/admin/editProduct?id=${product.id}" onclick="editProduct()">Edit Product</a>
-                                            <a href="#" class="delete-product" data-product-id="${product.id}" onclick="confirmDelete(event)">Delete Product</a>
+                                            <a href="#" class="delete-user" data-user-id="${user.id}" onclick="confirmDelete(event)">Delete Users</a>
                                         </div>
                                     </div>
                                 </td>
@@ -394,12 +401,12 @@
                                 </c:if>
 
                             <!-- Hiển thị trang cuối cùng -->
-                            <c:if test="${index != 1}">
+                            <c:if test="${endPage > 1}">
                                 <li class="page-item ${(index == endPage) ? 'active' : ''}">
                                     <a class="page-link" href="/admin/user?index=${endPage}">${endPage}</a>
                                 </li>
                             </c:if>
-                                
+
                             <!-- Nút Next -->
                             <li class="page-item ${index == endPage ? 'disabled' : ''}">
                                 <a class="page-link" href="/admin/user?index=${index + 1}">Next</a>
@@ -574,7 +581,7 @@
             function confirmDelete(event) {
                 event.preventDefault(); // Ngăn không cho thẻ <a> thực hiện hành động mặc định
 
-                const productId = $(event.target).data("product-id"); // Lấy ID sản phẩm từ thuộc tính data
+                const usertId = $(event.target).data("user-id"); // Lấy ID sản phẩm từ thuộc tính data
 
                 const swalWithBootstrapButtons = Swal.mixin({
                     customClass: {
@@ -596,9 +603,9 @@
                     if (result.isConfirmed) {
                         // Gửi yêu cầu AJAX để xóa sản phẩm
                         $.ajax({
-                            url: `/admin/deleteProduct`, // Đường dẫn servlet xử lý xóa sản phẩm
+                            url: `/admin/deleteUser`, // Đường dẫn servlet xử lý xóa sản phẩm
                             type: "POST", // Sử dụng POST để xóa
-                            data: {id: productId}, // Gửi ID sản phẩm
+                            data: {id: usertId}, // Gửi ID sản phẩm
                             success: function (response) {
                                 swalWithBootstrapButtons.fire({
                                     title: "Deleted!",

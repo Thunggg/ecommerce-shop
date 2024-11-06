@@ -373,12 +373,12 @@
                         <ul class="pagination">
                             <!-- Nút Previous -->
                             <li class="page-item ${index == 1 ? 'disabled' : ''}">
-                                <a class="page-link" href="/admin/user?index=${index - 1}">Previous</a>
+                                <a class="page-link" href="/admin/loadPageAdmin?index=${index - 1}">Previous</a>
                             </li>
 
                             <!-- Hiển thị trang đầu tiên -->
                             <li class="page-item ${index == 1 ? 'active' : ''}">
-                                <a class="page-link" href="/admin/user?index=1">1</a>
+                                <a class="page-link" href="/admin/loadPageAdmin?index=1">1</a>
                             </li>
 
                             <!-- Dấu ... nếu cách xa các trang phía sau -->
@@ -390,7 +390,7 @@
                             <c:forEach begin="${index > 2 ? index - 2 : 2}" end="${index + 2 > endPage ? endPage : index + 2}" var="i">
                                 <c:if test="${i > 1 && i < endPage}">
                                     <li class="page-item ${index == i ? 'active' : ''}">
-                                        <a class="page-link" href="/admin/user?index=${i}">${i}</a>
+                                        <a class="page-link" href="/admin/loadPageAdmin?index=${i}">${i}</a>
                                     </li>
                                 </c:if>
                             </c:forEach>
@@ -403,13 +403,13 @@
                             <!-- Hiển thị trang cuối cùng -->
                             <c:if test="${endPage > 1}">
                                 <li class="page-item ${(index == endPage) ? 'active' : ''}">
-                                    <a class="page-link" href="/admin/user?index=${endPage}">${endPage}</a>
+                                    <a class="page-link" href="/admin/loadPageAdmin?index=${endPage}">${endPage}</a>
                                 </li>
                             </c:if>
 
                             <!-- Nút Next -->
                             <li class="page-item ${index == endPage ? 'disabled' : ''}">
-                                <a class="page-link" href="/admin/user?index=${index + 1}">Next</a>
+                                <a class="page-link" href="/admin/loadPageAdmin?index=${index + 1}">Next</a>
                             </li>
                         </ul>
                     </nav>

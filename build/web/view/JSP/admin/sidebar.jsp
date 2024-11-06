@@ -78,6 +78,7 @@
     <div class="logo">Instagram</div>
     <a class="nav-item" href="/admin"><i class="fas fa-home"></i>Dashboard</a>
     <a class="nav-item" href="/admin/user"><i class="fas fa-users"></i>User</a>
+    <a class="nav-item" href="/admin/loadPageAdmin"><i class="fa-solid fa-user-tie"></i>Admin</a>
     <a class="nav-item"><i class="fas fa-shopping-cart"></i>Dashboard</a>
     <a class="nav-item"><i class="fas fa-plane"></i>Dashboard</a>
     <a class="nav-item"><i class="fas fa-shield"></i>Dashboard</a>

@@ -343,7 +343,25 @@ public class DAO {
 
         return list;
     }
+    
+    public boolean deleteUserById(int id) {
+        String query = "delete Users where id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, id);
 
+            int rowsAffected = ps.executeUpdate();
+
+            return rowsAffected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+    
     public boolean updateUserStatus(int productId, boolean status) {
         String query = "UPDATE Users SET status = ? WHERE id = ?";
         try {
@@ -377,6 +395,47 @@ public class DAO {
             } catch (Exception e) {
             }
         }
+    }
+    
+    public ArrayList<user> getAllAdmin() {
+        ArrayList<user> list = new ArrayList<>();
+        String query = "select * from Users\n"
+                + "where roleid = 1";
+        try {
+            conn = new DBContext().getConnection(); // mo ket noi voi sql sever
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11)));
+            }
+        } catch (Exception e) {
+
+        }
+        return list;
+    }
+    
+    public ArrayList<user> pagingAdmin(int curPage) {
+        ArrayList<user> list = new ArrayList<>();
+        String query = "select * from Users\n"
+                + "where roleid = 1\n"
+                + "order by id\n"
+                + "offset ? rows fetch next 10 rows only;";
+        try {
+            conn = new DBContext().getConnection(); // mo ket noi voi sql sever
+            ps = conn.prepareStatement(query);
+//            CT tinh off set = ( so trang - 1 ) * so san pham
+            int offSet = (curPage - 1) * 10;
+            ps.setInt(1, offSet);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11)));
+            }
+        } catch (Exception e) {
+        }
+
+        return list;
     }
     
     public static void main(String[] args) {
