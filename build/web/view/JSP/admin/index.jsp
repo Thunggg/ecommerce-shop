@@ -295,42 +295,46 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     </head>
     <body>
-        <div class="sidebar">
-            <div class="logo">Instagram</div>
-            <div class="nav-item active"><i class="fas fa-home"></i>Dashboard</div>
-            <div class="nav-item"><i class="fas fa-users"></i>Dashboard</div>
-            <div class="nav-item"><i class="fas fa-shopping-cart"></i>Dashboard</div>
-            <div class="nav-item"><i class="fas fa-plane"></i>Dashboard</div>
-            <div class="nav-item"><i class="fas fa-shield"></i>Dashboard</div>
-            <div class="nav-item"><i class="fas fa-cog"></i>Dashboard</div>
-        </div>
+        <!--        <div class="sidebar">
+                    <div class="logo">Instagram</div>
+                    <div class="nav-item active"><i class="fas fa-home"></i>Dashboard</div>
+                    <div class="nav-item"><i class="fas fa-users"></i>Dashboard</div>
+                    <div class="nav-item"><i class="fas fa-shopping-cart"></i>Dashboard</div>
+                    <div class="nav-item"><i class="fas fa-plane"></i>Dashboard</div>
+                    <div class="nav-item"><i class="fas fa-shield"></i>Dashboard</div>
+                    <div class="nav-item"><i class="fas fa-cog"></i>Dashboard</div>
+                </div>-->
 
-        <div class="main-content">
-            <div class="header">
-                <h1>Product List</h1>
-                <div style="display: flex; gap: 16px;">
-                    <div class="search-box">
-                        <i class="fas fa-search"></i>
-                        <input type="text" placeholder="Search...">
-                    </div>
-                    <a class="btn btn-primary add-new" href="/admin/create" role="button">New Product</a>
-                </div>
-            </div>
+        <jsp:include page="sidebar.jsp"></jsp:include>
 
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th><input type="checkbox"></th>
-                            <th>Image</th>
-                            <th>Title</th>
-                            <th>Price</th>
-                            <th>stock</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            <div class="main-content">
+                <!--                <div class="header">
+                                    <h1>Product List</h1>
+                                    <div style="display: flex; gap: 16px;">
+                                        <div class="search-box">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" placeholder="Search...">
+                                        </div>
+                                        <a class="btn btn-primary add-new" href="/admin/create" role="button">New Product</a>
+                                    </div>
+                                </div>-->
+
+            <jsp:include page="header.jsp"></jsp:include>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox"></th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Price</th>
+                                <th>stock</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                         <c:forEach items="${listProduct}" var="product">
                             <tr>
                                 <td><input type="checkbox"></td>
