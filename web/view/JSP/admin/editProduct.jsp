@@ -279,12 +279,16 @@
 
     </head>
     <body>
+
+        <script src="/view/assets/admin/js/jquery-3.7.1.js"></script>
+        <script src="/view/assets/admin/js/jquery.validate.js"></script>
+
         <div class="container">
             <div class="breadcrumb">
                 <a href="#">Products</a> / <span>Create New Product</span>
             </div>
 
-            <form action="/admin/editProduct" method="POST" enctype="multipart/form-data" class="product-form">
+            <form action="/admin/editProduct" method="POST" enctype="multipart/form-data" class="product-form" id="productForm">
 
                 <input type="hidden" name="productId" value="${id}">  <!-- Thêm thuộc tính ẩn cho ID sản phẩm -->
 
@@ -303,13 +307,13 @@
                     <!-- Product Name -->
                     <div class="form-group">
                         <label for="productName">Product Name</label>
-                        <input type="text" name="productName" id="productName" placeholder="Enter product name" value="${product.productName}" required">
+                        <input type="text" name="productName" id="productName" placeholder="Enter product name" value="${product.productName}">
                     </div>
 
                     <!-- Price -->
                     <div class="form-group">
                         <label for="price">Price ($)</label>
-                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01" value="${product.price}" required>
+                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01" value="${product.price}">
                     </div>
 
                     <!-- Discount -->
@@ -402,10 +406,10 @@
 
 
                         <!-- Stock Quantity -->
-<!--                        <div class="form-group">
-                            <label for="stock">Stock Quantity</label>
-                            <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" value="${product.stock}" required>
-                    </div>-->
+                        <!--                        <div class="form-group">
+                                                    <label for="stock">Stock Quantity</label>
+                                                    <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" value="${product.stock}" required>
+                                            </div>-->
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
@@ -510,6 +514,88 @@
                     mainImagePreview.src = "${product.images}"; // Giữ lại ảnh cũ
                 }
             }
+
+
+
+            $(document).ready(function () {
+                $("#productForm").validate({
+                    rules: {
+                        productName: {
+                            required: true,
+                            minlength: 0
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 1
+                        },
+                        discount: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                            max: 100
+                        },
+                        description: {
+                            required: true
+                        },
+                        categoryId: {
+                            required: true
+                        },
+                        supplierId: {
+                            required: true
+                        },
+                        stock: {
+                            required: true,
+                            digits: true,
+                            min: 1
+                        },
+                        colors: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        productName: {
+                            required: "Please enter the product name",
+                            minlength: "Product name must be at least 1 characters"
+                        },
+                        price: {
+                            required: "Please enter the price",
+                            number: "Please enter a valid price",
+                            min: "Price must be at least $1"
+                        },
+                        discount: {
+                            required: "Please enter the discount:",
+                            number: "Please enter a valid discount",
+                            min: "Discount cannot be negative",
+                            max: "Discount cannot greather than 100%"
+                        },
+                        description: {
+                            required: "Please enter the product description"
+                        },
+                        categoryId: {
+                            required: "Please select a category"
+                        },
+                        supplierId: {
+                            required: "Please select a supplier"
+                        },
+                        stock: {
+                            required: "Please enter stock quantity",
+                            digits: "Stock must be a whole number",
+                            min: "Stock must be at least 1"
+                        },
+                        colors: {
+                            required: "Please enter the colors of the product"
+                        }
+                    },
+                    errorElement: "div",
+                    errorClass: "text-danger",
+                    submitHandler: function (form) {
+                        form.submit(); // Sẽ chỉ gửi form khi không có lỗi
+                    }
+                });
+            });
+
+
 
         </script>
         <!-- Bootstrap 5 JavaScript Bundle with Popper -->

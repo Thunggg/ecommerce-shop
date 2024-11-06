@@ -19,6 +19,13 @@
         <!-- Font Awesome -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>-->
+        <!--<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>-->
+        <!--<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/additional-methods.min.js"></script>-->
+
+
+
         <style>
             /* General reset and body styling */
             * {
@@ -278,12 +285,17 @@
 
     </head>
     <body>
+        <script src="/view/assets/admin/js/jquery-3.7.1.js"></script>
+        <script src="/view/assets/admin/js/jquery.validate.js"></script>
+
+
+
         <div class="container">
             <div class="breadcrumb">
                 <a href="#">Products</a> / <span>Create New Product</span>
             </div>
 
-            <form action="/admin/create" method="POST" enctype="multipart/form-data" class="product-form">
+            <form action="/admin/create" method="POST" enctype="multipart/form-data" class="product-form" id="productForm">
                 <div class="image-section">
 
                     <div class="main-image" onclick="handleImageUpload(this)">
@@ -297,13 +309,13 @@
                     <!-- Product Name -->
                     <div class="form-group">
                         <label for="productName">Product Name</label>
-                        <input type="text" name="productName" id="productName" placeholder="Enter product name" required>
+                        <input type="text" name="productName" id="productName" placeholder="Enter product name">
                     </div>
 
                     <!-- Price -->
                     <div class="form-group">
                         <label for="price">Price ($)</label>
-                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01" required>
+                        <input type="number" name="price" id="price" placeholder="Enter price" min="1" step="0.01">
                     </div>
 
                     <!-- Discount -->
@@ -315,13 +327,13 @@
                     <!-- Description -->
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" id="description" placeholder="Enter product description" required></textarea>
+                        <textarea name="description" id="description" placeholder="Enter product description"></textarea>
                     </div>
 
                     <!-- Category -->
                     <div class="form-group">
                         <label for="categoryId">Category</label>
-                        <select name="categoryId" id="categoryId" class="form-select" required>
+                        <select name="categoryId" id="categoryId" class="form-select">
                             <c:forEach items="${listCategory}" var="category">
                                 <option value="${category.id}-${category.type_id}">${category.name}</option>
                             </c:forEach>
@@ -331,7 +343,7 @@
                     <!-- supplier -->
                     <div class="form-group">
                         <label for="supplierId">Supplier</label>
-                        <select name="supplierId" id="supplierId" class="form-select" required>
+                        <select name="supplierId" id="supplierId" class="form-select">
                             <c:forEach items="${listSupplier}" var="supplier">
                                 <option value="${supplier.id}">${supplier.name}</option>
                             </c:forEach>
@@ -347,7 +359,7 @@
                     <!-- Colors -->
                     <div class="form-group">
                         <label for="colors">Colors</label>
-                        <input type="text" name="colors" id="colors" placeholder="Enter colors of product (e.g., Red, Blue)" required>
+                        <input type="text" name="colors" id="colors" placeholder="Enter colors of product (e.g., Red, Blue)">
                     </div>
 
                     <!-- Sizes -->
@@ -382,10 +394,10 @@
                     </div>
 
                     <!-- Stock Quantity -->
-<!--                    <div class="form-group">
-                        <label for="stock">Stock Quantity</label>
-                        <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" required>
-                    </div>-->
+                    <!--                    <div class="form-group">
+                                            <label for="stock">Stock Quantity</label>
+                                            <input type="number" name="stock" id="stock" placeholder="Enter stock quantity" min="1" required>
+                                        </div>-->
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
@@ -401,31 +413,31 @@
             String successMessage = (String) Session.getAttribute("errorMessage");
             if (successMessage != null) {
         %>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-                            // Initialize SweetAlert Toast
-                            const Toast = Swal.mixin({
-                                toast: true,
-                                position: "top-end",
-                                showConfirmButton: false,
-                                timer: 5000,
-                                timerProgressBar: true,
-                                didOpen: (toast) => {
-                                    toast.onmouseenter = Swal.stopTimer;
-                                    toast.onmouseleave = Swal.resumeTimer;
-                                }
-                            });
 
-                            // Trigger the success toast notification
-                            Toast.fire({
-                                icon: "error",
-                                title: "<%= successMessage%>"
-                            }).then(() => {
-                                // Remove the session attribute after showing the notification
+        <script>
+            // Initialize SweetAlert Toast
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 5000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+
+            // Trigger the success toast notification
+            Toast.fire({
+                icon: "error",
+                title: "<%= successMessage%>"
+            }).then(() => {
+                // Remove the session attribute after showing the notification
             <%
                 session.removeAttribute("errorMessage");
             %>
-                            });
+            });
         </script>
         <%
             }
@@ -488,7 +500,89 @@
                     reader.readAsDataURL(file);
                 }
             }
+
+
+            $(document).ready(function () {
+                $("#productForm").validate({
+                    rules: {
+                        productName: {
+                            required: true,
+                            minlength: 0
+                        },
+                        price: {
+                            required: true,
+                            number: true,
+                            min: 1
+                        },
+                        discount: {
+                            required: true,
+                            number: true,
+                            min: 0,
+                            max: 100
+                        },
+                        description: {
+                            required: true
+                        },
+                        categoryId: {
+                            required: true
+                        },
+                        supplierId: {
+                            required: true
+                        },
+                        stock: {
+                            required: true,
+                            digits: true,
+                            min: 1
+                        },
+                        colors: {
+                            required: true
+                        }
+                    },
+                    messages: {
+                        productName: {
+                            required: "Please enter the product name",
+                            minlength: "Product name must be at least 1 characters"
+                        },
+                        price: {
+                            required: "Please enter the price",
+                            number: "Please enter a valid price",
+                            min: "Price must be at least $1"
+                        },
+                        discount: {
+                            required: "Please enter the discount:",
+                            number: "Please enter a valid discount",
+                            min: "Discount cannot be negative",
+                            max: "Discount cannot greather than 100%"
+                        },
+                        description: {
+                            required: "Please enter the product description"
+                        },
+                        categoryId: {
+                            required: "Please select a category"
+                        },
+                        supplierId: {
+                            required: "Please select a supplier"
+                        },
+                        stock: {
+                            required: "Please enter stock quantity",
+                            digits: "Stock must be a whole number",
+                            min: "Stock must be at least 1"
+                        },
+                        colors: {
+                            required: "Please enter the colors of the product"
+                        }
+                    },
+                    errorElement: "div",
+                    errorClass: "text-danger",
+                    submitHandler: function (form) {
+                        form.submit(); // Sẽ chỉ gửi form khi không có lỗi
+                    }
+                });
+            });
+
+
         </script>
+
         <!-- Bootstrap 5 JavaScript Bundle with Popper -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

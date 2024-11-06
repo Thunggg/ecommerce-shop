@@ -1,0 +1,32 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.login {
+    text-align: center;
+}
+
+.loginForm {
+    max-width: 50%;
+    margin: 10% auto;
+}
+
+.heading {
+    text-align: center;
+}
+
+.button {
+    text-align: center;
+}
+
+.table table {
+    text-align: center;
+}
+
+#error {
+    color: red;
+    text-align: center;
+    margin-top: 5px;
+}
