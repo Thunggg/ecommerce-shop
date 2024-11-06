@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,6 +72,20 @@ public class editAdmin extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        //CHECK COOKIE
+        String username = null;
+        Cookie[] c = request.getCookies();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i].getName().equals("username")) {
+                username = c[i].getValue();
+                break;
+            }
+        }
+        if (username == null) {
+            response.sendRedirect("/admin/login");
+            return;
+        }
+        
         DAO dao = new DAO(); // Tạo đối tượng ProductDAO
 
         String userID = request.getParameter("id");

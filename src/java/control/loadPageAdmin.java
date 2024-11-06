@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -60,6 +61,21 @@ public class loadPageAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        //CHECK COOKIE
+        String username = null;
+        Cookie[] c = request.getCookies();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i].getName().equals("username")) {
+                username = c[i].getValue();
+                break;
+            }
+        }
+        if (username == null) {
+            response.sendRedirect("/admin/login");
+            return;
+        }
+        
+        
         //B1: lay data tu dao
         DAO dao = new DAO();
         ArrayList<user> listUser = dao.getAllAdmin();

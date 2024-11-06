@@ -5,8 +5,6 @@
 
 package control;
 
-import dao.admin.DAO;
-import entity.product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,14 +13,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 
 /**
  *
  * @author Nguyen_Tien_Thuan_CE181024
  */
-@WebServlet(name="adminControl", urlPatterns={"/admin"})
-public class adminControl extends HttpServlet {
+@WebServlet(name="logoutAdmin", urlPatterns={"/admin/logoutAdmin"})
+public class logoutAdmin extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +36,10 @@ public class adminControl extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet adminControl</title>");  
+            out.println("<title>Servlet logoutAdmin</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet adminControl at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet logoutAdmin at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,49 +56,12 @@ public class adminControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        //CHECK COOKIE
-        String username = null;
         Cookie[] c = request.getCookies();
         for (int i = 0; i < c.length; i++) {
-            if (c[i].getName().equals("username")) {
-                username = c[i].getValue();
-                break;
-            }
+            c[i].setMaxAge(0);
+            response.addCookie(c[i]);
         }
-        if (username == null) {
-            response.sendRedirect("/admin/login");
-            return;
-        }
-        
-        
-        //B1: lay data tu dao
-        DAO dao = new DAO();
-        ArrayList<product> list = dao.getAllProduct();
-        //B2: day sang jsp
-        
-        String curPage = request.getParameter("index");
-        int index;
-        
-        if (curPage == null) {
-            index = 1; // Giá trị mặc định là trang đầu tiên
-        } else{
-            index = Integer.parseInt(curPage);
-        }
-        
-        //b1: get total account
-        int totalPage = dao.getTotalProduct();
-        int soSP = 10;
-        int endPage = totalPage / soSP;
-        if (totalPage % soSP != 0) {
-            endPage++;
-        }
-        ArrayList<product> listPagingProduct = dao.pagingProduct(index);
-        
-        request.setAttribute("listProduct", listPagingProduct);
-        request.setAttribute("endPage", endPage);
-        request.setAttribute("ListP", list);
-        request.setAttribute("index", index); //trang hien tai
-        request.getRequestDispatcher("view/JSP/admin/index.jsp").forward(request, response);
+        response.sendRedirect("/admin/login");
     } 
 
     /** 

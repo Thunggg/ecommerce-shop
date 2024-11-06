@@ -12,10 +12,13 @@ import entity.supplier;
 import entity.user;
 import java.awt.List;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -528,7 +531,39 @@ public class DAO {
         }
         return false; // Trả về false nếu có lỗi xảy ra
     }
+    
+    public user getAccount(String username) {
+        user account = null;
+        String query = "SELECT * FROM Users WHERE username=?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                return new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11));
+            }
+            rs.close();
 
+        } catch (SQLException ex) {
+            Logger.getLogger(DAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public boolean checkAccount(String username, String password) {
+        user a = getAccount(username);
+        
+        if (a == null) {
+            return false;
+        }
+//        return Encryption.equalsMD5(password, a.getPassword());
+        return password.equals(a.getPassword());
+    }
+    
+    
     public static void main(String[] args) {
         DAO dao = new DAO(); // Tạo đối tượng DAO
         ArrayList<user> u = dao.getAllUser();
