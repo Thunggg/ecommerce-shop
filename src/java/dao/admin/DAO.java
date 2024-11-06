@@ -9,6 +9,7 @@ import entity.allProduct;
 import entity.category;
 import entity.product;
 import entity.supplier;
+import entity.user;
 import java.awt.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -302,13 +303,87 @@ public class DAO {
         return false;
     }
 
+    public ArrayList<user> getAllUser() {
+        ArrayList<user> list = new ArrayList<>();
+        String query = "select * from Users\n"
+                + "where roleid = 2";
+        try {
+            conn = new DBContext().getConnection(); // mo ket noi voi sql sever
+            ps = conn.prepareStatement(query);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11)));
+            }
+        } catch (Exception e) {
+
+        }
+        return list;
+    }
+
+    public ArrayList<user> pagingUser(int curPage) {
+        ArrayList<user> list = new ArrayList<>();
+        String query = "select * from Users\n"
+                + "where roleid = 2\n"
+                + "order by id\n"
+                + "offset ? rows fetch next 10 rows only;";
+        try {
+            conn = new DBContext().getConnection(); // mo ket noi voi sql sever
+            ps = conn.prepareStatement(query);
+//            CT tinh off set = ( so trang - 1 ) * so san pham
+            int offSet = (curPage - 1) * 10;
+            ps.setInt(1, offSet);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new user(rs.getInt(1), rs.getString(2), rs.getString(3), rs.getString(4), rs.getString(5), rs.getString(6), rs.getString(7),
+                        rs.getString(8), rs.getString(9), rs.getInt(10), rs.getInt(11)));
+            }
+        } catch (Exception e) {
+        }
+
+        return list;
+    }
+
+    public boolean updateUserStatus(int productId, boolean status) {
+        String query = "UPDATE Users SET status = ? WHERE id = ?";
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            ps.setBoolean(1, status);
+            ps.setInt(2, productId);
+            int rowsAffected = ps.executeUpdate(); // Chỉ gọi một lần
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            // Đảm bảo giải phóng tài nguyên
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (ps != null) {
+                    ps.close();
+                }
+            } catch (Exception e) {
+            }
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+            }
+        }
+    }
+    
     public static void main(String[] args) {
         DAO dao = new DAO(); // Tạo đối tượng DAO
-        allProduct p = dao.getProductById(1);
-        if (p != null) {
-            System.out.println(p);
-        } else {
-            System.out.println("Product not found or an error occurred.");
+        ArrayList<user> u = dao.getAllUser();
+        for (user x : u) {
+            System.out.println(x);
         }
     }
 
