@@ -123,11 +123,6 @@ public class user {
         this.status = status;
     }
 
-    @Override
-    public String toString() {
-        return "user{" + "id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + ", avatar=" + avatar + ", userName=" + userName + ", password=" + password + ", address=" + address + ", phone=" + phone + ", roledId=" + roledId + ", status=" + status + '}';
-    }
-    
-    
+  
     
 }

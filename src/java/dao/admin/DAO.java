@@ -438,6 +438,33 @@ public class DAO {
         return list;
     }
     
+    public boolean insertAdmin(String firstname, String lastname, String email, String avatar, String username, String password, String address, String phone) {
+        String query = "INSERT INTO Users (firstname, lastname, email, avatar, username, password, address, phone, roleid, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            conn = new DBContext().getConnection();
+            ps = conn.prepareStatement(query);
+            
+            ps.setString(1, firstname);
+            ps.setString(2, lastname);
+            ps.setString(3, email);
+            ps.setString(4, avatar);
+            ps.setString(5, username);
+            ps.setString(6, password);
+            ps.setString(7, address);
+            ps.setString(8, phone);
+            ps.setInt(9, 1);
+            ps.setBoolean(10, true);
+
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();  // Hiển thị chi tiết lỗi
+        }
+        return false;
+    }
+    
     public static void main(String[] args) {
         DAO dao = new DAO(); // Tạo đối tượng DAO
         ArrayList<user> u = dao.getAllUser();

@@ -305,6 +305,7 @@
                             <i class="fas fa-search"></i>
                             <input type="text" placeholder="Search...">
                         </div>
+                        <a class="btn btn-primary add-new" href="/admin/createNewAdmin" role="button">New Admin</a>
                     </div>
                 </div>
 
