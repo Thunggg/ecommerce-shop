@@ -37,7 +37,7 @@ public class Fproduct {
         this.stock = stock;
         this.description = description;
         this.images = images.split(" ")[0];
-        this.colors = colors.split(",")[0];;
+        this.colors = colors;
         this.releaseDate = releaseDate;
         this.discount = discount;
         this.unitSold = unitSold;

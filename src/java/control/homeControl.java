@@ -9,6 +9,7 @@ import entity.product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -84,25 +85,46 @@ public class homeControl extends HttpServlet {
 
         // Tạo chuỗi HTML từ danh sách sản phẩm
         StringBuilder html = new StringBuilder();
+
         for (product prod : additionalProducts) {
             html.append("<div class=\"product-card\">");
-            html.append("<img src=\"").append(prod.getImages()).append("\" alt=\"").append(prod.getProductName()).append("\">");
-            html.append("<a href=\"#\" class=\"product-title\">").append(prod.getProductName()).append("</a>");
-            html.append("<p class=\"price\">$").append(prod.getPrice()).append("</p>");
-            html.append("</div>");
+
+            // Image and product title
+            html.append("<a href=\"detail?id=").append(prod.getId()).append("\"><img src=\"")
+                    .append(prod.getImages()).append("\" alt=\"").append(prod.getProductName()).append("\"></a>");
+            html.append("<a href=\"detail?id=").append(prod.getId()).append("\" class=\"product-title\">")
+                    .append(prod.getProductName()).append("</a>");
+
+            // Price and discount container
+            html.append("<div class=\"giaca\">");
+
+            // Product price (without decimal places)
+            html.append("<div class=\"product-price\">")
+                    .append("<span>$").append((int) prod.getPrice()).append("</span>")
+                    .append("</div>");
+
+            // Display discount if available
+            if (prod.getDiscount() > 0) {
+                html.append("<div class=\"dis\">")
+                        .append("<span class=\"discount\">").append((int) (prod.getDiscount() * 100)).append("%</span>")
+                        .append("</div>");
+            }
+
+            html.append("</div>"); // Close giaca container
+            html.append("</div>"); // Close product-card
         }
 
         response.setContentType("text/html");
         response.getWriter().write(html.toString());
-}
+    }
 
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */
-@Override
-public String getServletInfo() {
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
 

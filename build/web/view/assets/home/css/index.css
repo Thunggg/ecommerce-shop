@@ -449,7 +449,7 @@ footer {
 .footer-column h4 {
     color: #000;
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 800;
     margin-bottom: 24px;
 }
 
@@ -701,4 +701,23 @@ footer {
     font-size: 40px;
     text-align: center;
     padding-top: 30px;
+}
+.discount {
+    color: #e53e3e;
+    font-weight: bold;
+    font-weight: 500;
+    background-color: #FFEBEB;
+    padding: 5px 20px;
+    border-radius: 20px;
+    margin-left: 15px;
+}
+.giaca{
+    display: flex;
+    align-items: center;
+}
+.product-price {
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 20px;
+    font-weight: 600;
 }

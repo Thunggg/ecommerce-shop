@@ -7,6 +7,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page import="jakarta.servlet.http.HttpSession" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,8 +16,9 @@
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="icon" href="/view/assets/home/img/1.png" type="image/x-icon">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <title>JSP Page</title>
+        <title>Obsidian Shop | Mua và Bán</title>
 
     </head>
     <script>
@@ -58,18 +60,24 @@
                 <nav class="navigation">
                     <ul class="nav-list">
                         <li><a href="home">Giới Thiệu</a></li>
-                        <li><a href="/product">Sản Phẩm</a></li>
-                        <li><a href="#">Bài Viết</a></li>
+                        <li><a href="product">Sản Phẩm</a></li>
+                        <li><a href="order">Đã mua</a></li>
                         <li><a href="#">Liên Hệ</a></li>
                     </ul>
                 </nav>
-                <form class="search-form">
-                    <input class="search-input" type="text" placeholder="Tìm kiếm sản phẩm...">
-                    <button class="search-button" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                </form>
                 <div class="icons">
-                    <a href="#"><i class="fa-solid fa-truck-fast"></i></a>
-                    <a class="user-icon" href="#"><i class="fa-solid fa-circle-user"></i></a>
+                    <a href="order"><i class="fa-solid fa-truck-fast"></i></a>
+                    <!-- Kiểm tra session và hiển thị tương ứng -->
+                    <c:choose>
+                        <c:when test="${not empty cookie.email}">
+                            <!-- Nếu email trong session tồn tại, hiển thị Sign out -->
+                            <a style="text-decoration: none;" href="signout">Sign out</a>
+                        </c:when>
+                        <c:otherwise>
+                            <!-- Nếu chưa đăng nhập, hiển thị icon đăng nhập -->
+                            <a class="user-icon" href="login"><i class="fa-solid fa-circle-user"></i></a>
+                            </c:otherwise>
+                        </c:choose>
                 </div>
             </div>
         </div>
@@ -79,7 +87,7 @@
                     <h1>CHUYÊN THỜI TRANG PHONG CÁCH, HIỆN ĐẠI</h1>
                     <p>Chúng tôi chuyên cung cấp nhiều loại quần áo được chế tác tỉ mỉ, được thiết kế để làm nổi bật cá tính
                         của bạn và đáp ứng phong cách của bạn.</p>
-                    <a class="view-now" href="#">Xem Ngay</a>
+                    <a class="view-now" href="product">Xem Ngay</a>
                     <div class="stats">
                         <div class="stat-item">
                             <div class="stat-number">200+</div>
@@ -97,8 +105,6 @@
                 </div>
                 <div class="banner-image">
                     <img class="main-image" src="/view/assets/home/img/banner/Rectangle 2.jpg" alt="Main Image">
-                    <!--                    <img class="icon icon-top-right" src="/view/assets/home/img/icon-1.svg" alt="Icon">
-                                        <img class="icon icon-bottom-left" src="/view/assets/home/img/icon-1.svg" alt="Icon">-->
                 </div>
             </div>
         </div>
@@ -118,8 +124,8 @@
             <div class="product-grid" id="new-arrivals">
                 <c:forEach begin="1" end="20" var="product" items="${ListP}">
                     <div class="product-card">
-                        <img src="${product.getImages()}" alt="T-shirt with Type Design">
-                        <a href="/view/JSP/client/detail.jsp" class="product-title">${product.productName}</a>
+                        <a href="detail?id=${product.getId()}"><img src="${product.getImages()}" alt="T-shirt with Type Design"></a>
+                        <a href="detail?id=${product.getId()}" class="product-title">${product.productName}</a>
                         <p class="price">$${fn:substringBefore(product.getPrice(), '.')}</p>
                     </div>
                 </c:forEach>
@@ -133,9 +139,16 @@
             <div class="product-grid" id="top-selling">
                 <c:forEach begin="1" end="8" var="product" items="${ListSell}">
                     <div class="product-card">
-                        <img src="${product.getImages()}" alt="Vertical Striped Shirt">
-                        <a href="" class="product-title">${product.getProductName()}</a>
-                        <p class="price">$${fn:substringBefore(product.getPrice(), '.')}</p>
+                        <a href="detail?id=${product.getId()}"><img src="${product.getImages()}" alt="Vertical Striped Shirt"></a>
+                        <a href="detail?id=${product.getId()}" class="product-title">${product.getProductName()}</a>
+                        <div class="giaca">                        
+                            <div class="product-price">
+                                <span>$${fn:substringBefore(product.getPrice(), '.')}</span>
+                            </div>
+                            <div class="dis">
+                                <span class="discount">${fn:substringBefore(product.getDiscount() * 100,'.')}%</span>
+                            </div>
+                        </div>
                     </div>
                 </c:forEach>
             </div>
@@ -151,11 +164,11 @@
                     </div>
                     <div class="style-card">
                         <img class="img-2" src="/view/assets/home/img/Frame 62.jpg" alt="Formal Style">
-                      
+
                     </div>
                     <div class="style-card">
                         <img class="img-3" src="/view/assets/home/img/Frame 64.jpg" alt="Party Style">
-                      
+
                     </div>
                     <div class="style-card">
                         <img class="img-4" src="/view/assets/home/img/Frame 63.jpg" alt="Gym Style">

@@ -10,10 +10,12 @@ import entity.product;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -42,54 +44,60 @@ public class productControl extends HttpServlet {
         String size = request.getParameter("size");
         String priceParam = request.getParameter("priceSlider"); // Price range from slider
 
-        // Initialize DAO
         DAO dao = new DAO();
         ArrayList<Fproduct> filteredProducts;
 
-        // Check if any filter parameters are provided
         if (typeIdParam == null && color == null && size == null && (priceParam == null || priceParam.isEmpty())) {
-            // No filters applied, retrieve all products
             filteredProducts = dao.getAllFproduct();
         } else {
-            // Prepare filter parameters
             Integer typeId = null;
             if (typeIdParam != null && !typeIdParam.equals("-1")) {
                 try {
                     typeId = Integer.parseInt(typeIdParam);
                 } catch (NumberFormatException e) {
-                    typeId = null; // Invalid typeId
+                    typeId = null;
                 }
             }
 
-            Double maxPrice = null; // Initialize max price
+            Double maxPrice = null;
             if (priceParam != null && !priceParam.isEmpty()) {
                 try {
                     maxPrice = Double.parseDouble(priceParam);
                 } catch (NumberFormatException e) {
-                    maxPrice = null; // Handle invalid price format
+                    maxPrice = null;
                 }
             }
 
-            // Retrieve filtered products based on provided parameters
             filteredProducts = dao.getFilteredProducts(
-                    typeId, // Apply category filter if provided
-                    0.0, // Minimum price is always 0.0
-                    maxPrice, // Apply max price filter if provided
-                    color != null ? color : null, // Apply color filter if provided
-                    size != null ? size : null // Apply size filter if provided
+                    typeId,
+                    0.0,
+                    maxPrice,
+                    color != null ? color : null,
+                    size != null ? size : null
             );
         }
+        String curPage = request.getParameter("index");
+        int index;
 
-        // Extract unique sizes after filtered products are populated
+        if (curPage == null) {
+            index = 1;
+        } else {
+            index = Integer.parseInt(curPage);
+        }
+        int totalPage = dao.getTotalProduct();
+        int soSP = 10;
+        int endPage = totalPage / soSP;
+        if (totalPage % soSP != 0) {
+            endPage++;
+        }
+        ArrayList<product> listPagingProduct = dao.pagingProduct(index);
+
         Set<String> uniqueSizes = filteredProducts.stream()
-                .map(Fproduct::getSize) // Adjust according to your Product class
-                .filter(sizeValue -> sizeValue != null && !sizeValue.isEmpty()) // Ensure no null or empty sizes
+                .map(Fproduct::getSize)
+                .filter(sizeValue -> sizeValue != null && !sizeValue.isEmpty())
                 .collect(Collectors.toSet());
 
-        // Store the unique sizes in a request attribute
         request.setAttribute("uniqueSizes", uniqueSizes);
-
-        // Pass filtered results (or all products) to the JSP page
         request.setAttribute("listproduct", filteredProducts);
         request.getRequestDispatcher("view/JSP/client/product.jsp").forward(request, response);
     }
@@ -105,7 +113,23 @@ public class productControl extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String email = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("email")) {
+                    email = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (email == null) {
+            response.sendRedirect("login");
+            return;
+        } else {
+            processRequest(request, response);
+        }
     }
 
     /**
@@ -119,7 +143,52 @@ public class productControl extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String type = request.getParameter("type");
+        String curPageParam = request.getParameter("index");
+        int index = curPageParam != null ? Integer.parseInt(curPageParam) : 1;
+
+        DAO dao = new DAO();
+        List<Fproduct> additionalProducts = new ArrayList<>();
+
+        if ("new".equals(type)) {
+            additionalProducts = dao.pagingProductF(index);
+        }
+
+        StringBuilder html = new StringBuilder();
+        for (Fproduct prod : additionalProducts) {
+            html.append("<div class=\"product-card\">");
+            html.append("<a href=\"detail?id=").append(prod.getId()).append("\" class=\"product-card\">");
+            html.append("<img src=\"").append(prod.getImages()).append("\" alt=\"").append(prod.getProductName()).append("\" class=\"product-image\">");
+            html.append("</a>");
+            html.append("<div class=\"product-info\">");
+            html.append("<h3 class=\"product-title\">").append(prod.getProductName()).append("</h3>");
+            html.append("<div class=\"rating\">★★★★☆ 3.5/5</div>");
+
+            // Phần giá sản phẩm
+            html.append("<div class=\"gia\">");
+            html.append("<div class=\"product-price\">");
+            html.append("<span>$").append(prod.getPrice()).append("</span>");
+            html.append("</div>");
+
+            // Kiểm tra discount và chỉ hiển thị nếu lớn hơn 0
+            if (prod.getDiscount() > 0) {
+                html.append("<div class=\"dis\">");
+                html.append("<span class=\"discount\">").append((int) (prod.getDiscount() * 100)).append("%</span>");
+                html.append("</div>");
+            }
+
+            html.append("</div>"); // Đóng div "gia"
+
+            html.append("<div class=\"product-actions\">");
+            html.append("<button class=\"btn-buy\">Buy</button>");
+            html.append("<button class=\"btn-add-to-cart\">Add to Cart</button>");
+            html.append("</div>");
+            html.append("</div>");
+            html.append("</div>");
+        }
+
+        response.setContentType("text/html");
+        response.getWriter().write(html.toString());
     }
 
     /**

@@ -3,10 +3,9 @@
     Created on : Oct 28, 2024, 6:57:53 PM
     Author     : tins
 --%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,17 +15,10 @@
         <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <link rel="icon" href="/view/assets/home/img/1.png" type="image/x-icon">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-        <title>SHOP.CO - Casual Collection</title>
+        <title>Obsidian Shop | Mua và Bán</title>
     </head>
-    <script>
-        function updatePriceValue(value) {
-            // Update the displayed value
-            document.getElementById("priceValue").textContent = value;
-            // Set the hidden input's value for form submission
-            document.getElementById("priceInput").value = value;
-        }
-    </script>
     <body>
         <div class="top-bar">
             <div class="container">
@@ -42,7 +34,7 @@
                     <ul class="nav-list">
                         <li><a href="home">Giới Thiệu</a></li>
                         <li><a href="/product">Sản Phẩm</a></li>
-                        <li><a href="#">Bài Viết</a></li>
+                        <li><a href="order">Đã mua</a></li>
                         <li><a href="#">Liên Hệ</a></li>
                     </ul>
                 </nav>
@@ -76,8 +68,8 @@
                     <div class="filter-section">
                         <div class="filter-title">Price Range</div>
                         <div class="price-range">
-                            <input type="range" class="price-slider" name="priceSlider" min="50" max="10000" value="200" oninput="updatePriceValue(this.value)">
-                            <div>Price: $<span id="priceValue">200</span></div>
+                            <input type="range" class="price-slider" name="priceSlider" min="0" max="5000" value="0" oninput="updatePriceValue(this.value)">
+                            <div>Price: $<span id="priceValue">0</span></div>
                         </div>
                     </div>
 
@@ -85,31 +77,45 @@
                     <div class="filter-section">
                         <div class="filter-title">Colors</div>
                         <div class="color-options">
-                            <label><input type="radio" name="color" value="Đen" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: black; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Trắng" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: white; border-radius: 50%; border: 1px solid #ddd; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Xám" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: gray; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Xanh dương" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: blue; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Đỏ" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: red; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Vàng" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: yellow; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Nâu" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: sienna; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Xanh lá" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: green; border-radius: 50%; cursor: pointer;"></span></label>
-                            <label><input type="radio" name="color" value="Xanh đen" style="display: none;"><span style="display: inline-block; width: 20px; height: 20px; background-color: darkblue; border-radius: 50%; cursor: pointer;"></span></label>
+                            <label>
+                                <input type="radio" name="color" value="Đen" onclick="updateColorSelection(this)>
+                                <span style="color: #000000; cursor: pointer;">Đen</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Trắng" onclick="updateColorSelection(this)>
+                                <span style="color: #000000; cursor: pointer;">Trắng</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Xám" onclick="updateColorSelection(this)>
+                                <span style="color: gray; cursor: pointer;">Xám</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Xanh dương">
+                                <span style="color: blue; cursor: pointer;">Xanh dương</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Đỏ" >
+                                <span style="color: red; cursor: pointer;">Đỏ</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Vàng" >
+                                <span style="color: yellow; cursor: pointer;">Vàng</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Nâu" >
+                                <span style="color: sienna; cursor: pointer;">Nâu</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Xanh lá">
+                                <span style="color: green; cursor: pointer;">Xanh lá</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="color" value="Xanh đen" >
+                                <span style="color: darkblue; cursor: pointer;">Xanh đen</span>
+                            </label>
+
                         </div>
                     </div>
-
-                    <!-- Size Filter -->
-                    <div class="filter-section">
-                        <div class="filter-title">Size</div>
-                        <c:forEach var="size" items="${uniqueSizes}">
-                            <div class="size-options">
-                                <label>
-                                    <input type="radio" name="size" value="${size}">${size}
-                                </label>
-                            </div>
-                        </c:forEach>
-                    </div>
-
-
                     <!-- Apply Filter Button -->
                     <button type="submit" class="apply-filter">Apply Filter</button>
                 </form>
@@ -138,46 +144,44 @@
                             <h1>No products available.</h1>
                         </c:otherwise>
                     </c:choose>
-
-                    <div>
-                        <span>Showing 1-10 of 100 Products</span>
-                        <select class="sort-dropdown">
-                            <option>Most Popular</option>
-                            <option>Newest</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
-                        </select>
-                    </div>
                 </div>
-                <div class="products-grid">
-                    <c:forEach var="c" items="${listproduct}" begin="1" end="27">
-                        <a href="/view/JSP/client/detail.jsp">
-                            <div class="product-card">
+                <div class="products-grid" id="new-arrivals">
+                    <c:forEach var="c" items="${listproduct}" begin="1" end="27" >
+                        <div class="product-card">
+                            <a href="detail?id=${c.getId()}" class="product-card">
                                 <img src="${c.getImages()}" alt="Gradient Graphic T-shirt" class="product-image">
-                            </div>
+                            </a>
                             <div class="product-info">
                                 <h3 class="product-title">${c.getProductName()}</h3>
                                 <div class="rating">★★★★☆ 3.5/5</div>
-                                <div class="product-price">
-                                    <span>$${fn:substringBefore(c.getPrice(), '.')}</span>
+                                <div class="gia">  
+                                    <div class="product-price">
+                                        <span>$${fn:substringBefore(c.getPrice(), '.')}</span>
+                                    </div>
+                                    <div class="dis">
+                                        <c:if test="${c.getDiscount() > 0}">
+                                            <span class="discount">${fn:substringBefore(c.getDiscount() * 100,'.')}%</span>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                <div class="product-actions">
+                                    <a href="detail?id=${c.getId()}"><button class="btn-buy">Buy</button></a>
+                                    <a href="detail?id=${c.getId()}"><button class="btn-add-to-cart">Add to Cart</button></a>
                                 </div>
                             </div>
-                        </a>
+                        </div>
                     </c:forEach>
                     <!-- More product cards... -->
                 </div>
 
-                <div class="pagination">
-                    <a class="span">← Previous</a>
-                    <a class="page-number active">1</a>
-                    <a class="page-number">2</a>
-                    <a class="page-number">3</a>
-                    <a>...</a>
-                    <a class="page-number">8</a>
-                    <a class="page-number">9</a>
-                    <a class="page-number">10</a>
-                    <a class="span">Next →</a>
-                </div>
+                <section class="products-section">
+                    <div id="new-arrivals">
+                        <!-- Initial products will be loaded here -->
+                    </div>
+                    <div class="buttonnn">
+                        <button class="xemthem" onclick="loadMore('new', currentPage++)">Xem Thêm</button>
+                    </div>
+                </section>
             </section>
         </div>
         <div class="container newsletter">
@@ -247,5 +251,69 @@
                 </div>
             </div>
         </footer>
+        <script>
+            let currentPage = 1; // Start at page 1
+
+            function loadMore(type) {
+                let url = '/product'; // URL to the servlet
+                let params = 'type=' + type + '&index=' + currentPage; // Include current page index
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params
+                })
+                        .then(response => response.text())
+                        .then(data => {
+                            // Check if there is new data to append
+                            if (data.trim()) {
+                                document.getElementById('new-arrivals').innerHTML += data; // Append new products
+                                currentPage++; // Increment the current page for the next request
+                            } else {
+                                // Optionally, you can handle the case when no more products are available
+                                alert('No more products available.'); // Or hide the "Load More" button
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+            }
+            function updatePriceValue(value) {
+                // Update the span element with the new price value
+                document.getElementById('priceValue').innerText = value;
+            }
+            function updateColorSelection(selectedRadio) {
+                // Màu sắc tương ứng với các màu
+                const colorMap = {
+                    "Đen": "#000000",
+                    "Trắng": "#000000",
+                    "Xám": "#808080",
+                    "Xanh dương": "#0000FF",
+                    "Nâu": "#A52A2A",
+                    "Vàng": "#FFFF00",
+                    "Đỏ": "#FF0000",
+                    "Xanh lá": "#008000",
+                    "Xanh đen": "#003366",
+                    "Bạc": "#C0C0C0",
+                    "Xanh Rêu": "#556B2F",
+                    "Xám sói": "#BEBEBE",
+                    "Xanh lá điện tử": "#00FF00",
+                    "Hồng": "#FFC0CB"
+                };
+
+                // Reset tất cả các span
+                var spans = document.querySelectorAll('.color-circles span');
+                spans.forEach(function (span) {
+                    span.style.fontWeight = 'normal'; // Đặt lại font weight
+                    span.style.color = colorMap[span.textContent.trim()] || ''; // Đặt lại màu sắc ban đầu
+                });
+
+                // Lấy span tương ứng với màu đã chọn
+                var selectedSpan = document.getElementById("span-" + selectedRadio.value);
+                selectedSpan.style.fontWeight = 'bold'; // In đậm
+                selectedSpan.style.color = colorMap[selectedRadio.value]; // Đặt màu sắc
+            }
+        </script>
+
     </body>
 </html>
